@@ -123,8 +123,8 @@
   let filteredStations = $derived(
     stations.map(station => {
       const id = station.Number;
-      const arr = filteredArrivals.get(id) ?? 0;
-      const dep = filteredDepartures.get(id) ?? 0;
+      const arr = selectedStation ? (arrivals.get(id) ?? 0) : (filteredArrivals.get(id) ?? 0);
+      const dep = selectedStation ? (departures.get(id) ?? 0) : (filteredDepartures.get(id) ?? 0);
       return { ...station, arrivals: arr, departures: dep, totalTraffic: arr + dep };
     })
   );
@@ -132,7 +132,7 @@
   let radiusScale = $derived(
     d3.scaleSqrt()
       .domain([0, d3.max(filteredStations, d => d.totalTraffic) || 0])
-      .range(timeFilter === -1 ? [0, 25] : [3, 30])
+      .range(selectedStation ? [0, 25] : timeFilter === -1 ? [0, 25] : [3, 30])
   );
 
   let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
